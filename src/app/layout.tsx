@@ -1,10 +1,10 @@
-import type { Metadata, Viewport } from "next";
-import { Hind_Siliguri, Noto_Serif_Bengali } from "next/font/google";
 import BackToTop from "@/components/BackToTop";
 import BreakingTicker from "@/components/BreakingTicker";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { site } from "@/lib/data";
+import type { Metadata, Viewport } from "next";
+import { Hind_Siliguri, Noto_Serif_Bengali } from "next/font/google";
 import "./globals.css";
 
 const body = Hind_Siliguri({
@@ -44,14 +44,22 @@ const themeScript = `(function(){try{var t=localStorage.getItem('nk-theme');if(t
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="bn" suppressHydrationWarning className={`${body.variable} ${head.variable} antialiased`}>
+    <html
+      lang="bn"
+      suppressHydrationWarning
+      className={`${body.variable} ${head.variable} antialiased`}
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="flex min-h-screen flex-col">
+      <body
+        suppressHydrationWarning
+        suppressContentEditableWarning
+        className="flex min-h-screen flex-col"
+      >
         <a
           href="#main"
-          className="sr-only z-[70] rounded bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+          className="sr-only z-70 rounded bg-brand px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
         >
           মূল কনটেন্টে যান
         </a>
