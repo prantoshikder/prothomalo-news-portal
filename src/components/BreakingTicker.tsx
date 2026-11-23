@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { articleHref } from "@/lib/routes";
 import { getLatest } from "@/lib/data";
 
 export default function BreakingTicker() {
@@ -16,7 +17,7 @@ export default function BreakingTicker() {
             {loop.map((a, i) => (
               <li key={`${a.id}-${i}`} className="flex items-center" aria-hidden={i >= items.length}>
                 <Link
-                  href={`/news/${a.slug}`}
+                  href={articleHref(a.slug)}
                   tabIndex={i >= items.length ? -1 : undefined}
                   className="px-5 py-2 text-sm font-medium transition hover:text-brand"
                 >

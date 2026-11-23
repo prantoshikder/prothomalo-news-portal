@@ -1,5 +1,6 @@
 import { articles, getCategory, imageUrl, site } from "@/lib/data";
 import { absoluteUrl, DEFAULT_DESCRIPTION } from "@/lib/seo";
+import { articleHref } from "@/lib/routes";
 
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -9,7 +10,7 @@ export function GET() {
   const items = articles
     .slice(0, 30)
     .map((a) => {
-      const url = absoluteUrl(`/news/${a.slug}`);
+      const url = absoluteUrl(articleHref(a.slug));
       return `    <item>
       <title>${esc(a.title)}</title>
       <link>${url}</link>

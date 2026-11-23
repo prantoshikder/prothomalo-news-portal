@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getCategory, type CategorySlug } from "@/lib/data";
+import { categoryHref } from "@/lib/routes";
 
 export default function SectionHeading({
   title,
@@ -33,4 +35,11 @@ export default function SectionHeading({
       )}
     </div>
   );
+}
+
+/** SectionHeading pre-filled from a category: its name, colour and listing link. */
+export function CategoryHeading({ slug, title }: { slug: CategorySlug; title?: string }) {
+  const cat = getCategory(slug);
+  if (!cat) return null;
+  return <SectionHeading title={title ?? cat.name} href={categoryHref(cat.slug)} color={cat.color} />;
 }

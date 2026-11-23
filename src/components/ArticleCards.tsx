@@ -1,10 +1,13 @@
 import Link from "next/link";
-import type { Article, ArticleSummary } from "@/lib/data";
+import type { CSSProperties } from "react";
+import { getCategory, type Article, type ArticleSummary } from "@/lib/data";
+import { articleHref } from "@/lib/routes";
 import { cn, timeAgo, toBn } from "@/lib/utils";
+import AuthorInfo from "./AuthorInfo";
 import CategoryChip from "./CategoryChip";
 import NewsImage from "./NewsImage";
 
-const href = (a: ArticleSummary) => `/news/${a.slug}`;
+const href = (a: ArticleSummary) => articleHref(a.slug);
 
 function Meta({ article, className }: { article: Article; className?: string }) {
   return (
@@ -159,6 +162,111 @@ export function HeadlineItem({ article, index }: { article: ArticleSummary; inde
           {timeAgo(article.publishedAt)}
         </time>
       </div>
+    </article>
+  );
+}
+
+/** Category chip + headline, no image or time. Used under the lead story. */
+export function ChipHeadline({ article }: { article: Article }) {
+  return (
+    <article className="group relative">
+      <CategoryChip slug={article.category} />
+      <h3 className="mt-1 font-serif text-[15px] leading-snug font-semibold">
+        <Link href={href(article)} className="headline-link after:absolute after:inset-0">
+          {article.title}
+        </Link>
+      </h3>
+    </article>
+  );
+}
+
+/** Image with the headline laid over a dark gradient. */
+export function OverlayCard({
+  article,
+  sizes,
+  size = "md",
+  showCategory = false,
+  showExcerpt = false,
+  isVideo = false,
+}: {
+  article: Article;
+  sizes: string;
+  size?: "md" | "lg";
+  /** Small gold category label above the title. */
+  showCategory?: boolean;
+  showExcerpt?: boolean;
+  isVideo?: boolean;
+}) {
+  return (
+    <article className="group relative overflow-hidden rounded-2xl">
+      <NewsImage
+        seed={article.imageSeed}
+        alt={article.title}
+        sizes={sizes}
+        isVideo={isVideo}
+        className="rounded-2xl"
+      />
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-linear-to-t from-black/90 via-black/15 to-transparent" />
+      <div className={cn("absolute inset-x-0 bottom-0 text-white", size === "lg" ? "p-5 md:p-7" : "p-5 md:p-6")}>
+        {showCategory && (
+          <span className="text-xs font-semibold tracking-widest text-gold uppercase">
+            {getCategory(article.category)?.name}
+          </span>
+        )}
+        <h3
+          className={cn(
+            "font-serif leading-snug font-bold",
+            size === "lg" ? "mt-2 max-w-2xl text-xl md:text-3xl" : "text-xl md:text-2xl",
+          )}
+        >
+          <Link href={href(article)} className="after:absolute after:inset-0 hover:underline">
+            {article.title}
+          </Link>
+        </h3>
+        {showExcerpt && <p className="mt-2 line-clamp-2 text-sm text-white/80">{article.excerpt}</p>}
+      </div>
+    </article>
+  );
+}
+
+/** Small thumbnail on the left, headline + time on the right. Styled for dark bands. */
+export function MediaListItem({ article }: { article: Article }) {
+  return (
+    <article className="group relative grid grid-cols-[140px_1fr] gap-4">
+      <NewsImage seed={article.imageSeed} alt="" sizes="140px" isVideo={article.isVideo} className="rounded-lg" />
+      <div>
+        <h3 className="font-serif leading-snug font-semibold">
+          <Link href={href(article)} className="after:absolute after:inset-0 group-hover:text-gold">
+            {article.title}
+          </Link>
+        </h3>
+        <time className="mt-1 block text-xs text-slate-400" dateTime={article.publishedAt}>
+          {timeAgo(article.publishedAt)}
+        </time>
+      </div>
+    </article>
+  );
+}
+
+/** Quote-mark card with author avatar, for opinion pieces. */
+export function OpinionCard({ article, accent = "#7c3aed" }: { article: Article; accent?: string }) {
+  return (
+    <article className="group relative flex flex-col rounded-2xl bg-surface p-5 shadow-sm ring-1 ring-line transition hover:-translate-y-1 hover:shadow-md">
+      <svg viewBox="0 0 24 24" className="size-8 opacity-40" style={{ color: accent }} fill="currentColor" aria-hidden>
+        <path d="M7 7h4v4H8c0 2 1 3 3 3v3c-4 0-6-2-6-6V7zm9 0h4v4h-3c0 2 1 3 3 3v3c-4 0-6-2-6-6V7z" />
+      </svg>
+      <h3 className="mt-2 font-serif text-lg leading-snug font-bold">
+        <Link href={href(article)} className="headline-link after:absolute after:inset-0">
+          {article.title}
+        </Link>
+      </h3>
+      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{article.excerpt}</p>
+      <AuthorInfo
+        author={article.author}
+        className="mt-auto pt-5"
+        avatarClassName="ring-2 grayscale transition group-hover:grayscale-0"
+        avatarStyle={{ "--tw-ring-color": `${accent}33` } as CSSProperties}
+      />
     </article>
   );
 }

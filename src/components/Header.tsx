@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { categoryHref } from "@/lib/routes";
 import { categories } from "@/lib/data";
 import HeaderDate from "./HeaderDate";
 import Logo from "./Logo";
@@ -68,7 +69,7 @@ export default function Header() {
           {NAV.map((c) => (
             <Link
               key={c.slug}
-              href={`/category/${c.slug}`}
+              href={categoryHref(c.slug)}
               className="relative shrink-0 px-3 py-3 text-[15px] font-semibold text-ink transition after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:origin-left after:scale-x-0 after:bg-brand after:transition-transform hover:text-brand hover:after:scale-x-100"
             >
               {c.name}

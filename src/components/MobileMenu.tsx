@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { categoryHref } from "@/lib/routes";
 import { useEffect, useState } from "react";
 import type { Category } from "@/lib/data";
 import Logo from "./Logo";
@@ -83,7 +84,7 @@ export default function MobileMenu({ categories }: { categories: Category[] }) {
           {categories.map((c) => (
             <Link
               key={c.slug}
-              href={`/category/${c.slug}`}
+              href={categoryHref(c.slug)}
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 rounded-lg px-3 py-3 font-medium hover:bg-paper"
             >

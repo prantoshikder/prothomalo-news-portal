@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { categoryHref } from "@/lib/routes";
 import { categories, site } from "@/lib/data";
 import Logo from "./Logo";
 import NewsletterForm from "./NewsletterForm";
@@ -46,7 +47,7 @@ export default function Footer() {
               </li>
               {categories.map((c) => (
                 <li key={c.slug}>
-                  <Link href={`/category/${c.slug}`} className="transition hover:text-white">
+                  <Link href={categoryHref(c.slug)} className="transition hover:text-white">
                     {c.name}
                   </Link>
                 </li>

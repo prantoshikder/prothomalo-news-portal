@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { type Article, type Category, getCategory, imageUrl, site } from "./data";
+import { articleHref, categoryHref } from "@/lib/routes";
 
 export const absoluteUrl = (path = "/") => `${site.url}${path.startsWith("/") ? path : `/${path}`}`;
 
@@ -89,7 +90,7 @@ export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
 
 export function articleJsonLd(article: Article) {
   const cat = getCategory(article.category);
-  const url = absoluteUrl(`/news/${article.slug}`);
+  const url = absoluteUrl(articleHref(article.slug));
   return {
     "@type": article.category === "opinion" ? "OpinionNewsArticle" : "NewsArticle",
     "@id": `${url}#article`,
@@ -114,7 +115,7 @@ export function collectionJsonLd(category: Category, articles: Article[]) {
     "@type": "CollectionPage",
     name: category.name,
     description: category.description,
-    url: absoluteUrl(`/category/${category.slug}`),
+    url: absoluteUrl(categoryHref(category.slug)),
     inLanguage: "bn",
     isPartOf: { "@id": absoluteUrl("/#website") },
     mainEntity: {
@@ -122,7 +123,7 @@ export function collectionJsonLd(category: Category, articles: Article[]) {
       itemListElement: articles.map((a, i) => ({
         "@type": "ListItem",
         position: i + 1,
-        url: absoluteUrl(`/news/${a.slug}`),
+        url: absoluteUrl(articleHref(a.slug)),
         name: a.title,
       })),
     },

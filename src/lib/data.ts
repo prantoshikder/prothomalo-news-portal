@@ -245,8 +245,13 @@ export function getArticle(slug: string) {
   return articles.find((a) => a.slug === slug);
 }
 
-export function getArticlesByCategory(slug: CategorySlug, limit?: number) {
-  const list = articles.filter((a) => a.category === slug);
+/** Articles in a category, newest first. `excludeIds` lets a page avoid repeating a story it already shows. */
+export function getArticlesByCategory(
+  slug: CategorySlug,
+  limit?: number,
+  excludeIds: readonly number[] = [],
+) {
+  const list = articles.filter((a) => a.category === slug && !excludeIds.includes(a.id));
   return limit ? list.slice(0, limit) : list;
 }
 
@@ -258,8 +263,8 @@ export function getMostRead(limit = 10) {
   return [...articles].sort((a, b) => b.views - a.views).slice(0, limit);
 }
 
-export function getVideos() {
-  return articles.filter((a) => a.isVideo);
+export function getVideos(excludeIds: readonly number[] = []) {
+  return articles.filter((a) => a.isVideo && !excludeIds.includes(a.id));
 }
 
 export function getRelated(article: Article, limit = 4) {

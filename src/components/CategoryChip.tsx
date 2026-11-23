@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { categoryHref } from "@/lib/routes";
 import { getCategory, type CategorySlug } from "@/lib/data";
 
 export default function CategoryChip({
@@ -19,7 +20,7 @@ export default function CategoryChip({
   const cls =
     "relative z-10 inline-flex items-center gap-1.5 text-xs font-bold tracking-wide";
   return asLink ? (
-    <Link href={`/category/${cat.slug}`} className={cls} style={{ color: cat.color }}>
+    <Link href={categoryHref(cat.slug)} className={cls} style={{ color: cat.color }}>
       {inner}
     </Link>
   ) : (

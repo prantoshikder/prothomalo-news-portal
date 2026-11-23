@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { getAllTags, getLatest, getMostRead, toSummary } from "@/lib/data";
 import LatestTabs from "./LatestTabs";
+import TagList from "./TagList";
 
 export default function Sidebar({ sticky = true }: { sticky?: boolean }) {
   return (
@@ -9,19 +9,7 @@ export default function Sidebar({ sticky = true }: { sticky?: boolean }) {
 
       <div className="rounded-2xl border border-line bg-surface p-5">
         <h2 className="font-serif text-lg font-bold">আলোচিত বিষয়</h2>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {getAllTags()
-            .slice(0, 14)
-            .map((t) => (
-              <Link
-                key={t}
-                href={`/search?q=${encodeURIComponent(t)}`}
-                className="rounded-full border border-line px-3 py-1 text-sm transition hover:border-brand hover:bg-brand hover:text-white"
-              >
-                #{t}
-              </Link>
-            ))}
-        </div>
+        <TagList tags={getAllTags().slice(0, 14)} hashPrefix className="mt-3" />
       </div>
 
       <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-ink to-[#1c4a7d] p-5 text-white dark:from-[#16263a] dark:to-[#1c3352]">
