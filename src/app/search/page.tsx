@@ -58,8 +58,8 @@ async function Results({ searchParams }: { searchParams: PageProps<"/search">["s
       )}
 
       <div className="mt-2">
-        {results.map((a) => (
-          <ListCard key={a.id} article={a} />
+        {results.map((a, i) => (
+          <ListCard key={a.id} article={a} preload={i === 0} />
         ))}
         {q && results.length === 0 && (
           <div className="mt-10 rounded-2xl border border-dashed border-line p-10 text-center text-muted">

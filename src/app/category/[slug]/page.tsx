@@ -85,7 +85,7 @@ async function CategoryPageContent({ params }: Pick<PageProps<"/category/[slug]"
         <div>
           {featured && (
             <div className="border-b border-line pb-6">
-              <StoryCard article={featured} showExcerpt showCategory={false} />
+              <StoryCard article={featured} showExcerpt showCategory={false} preload />
             </div>
           )}
           {rest.map((a) => (

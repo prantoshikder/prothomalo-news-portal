@@ -47,10 +47,13 @@ export function StoryCard({
   article,
   showExcerpt = false,
   showCategory = true,
+  preload = false,
 }: {
   article: Article;
   showExcerpt?: boolean;
   showCategory?: boolean;
+  /** Set on the first above-the-fold card so it becomes the LCP image. */
+  preload?: boolean;
 }) {
   return (
     <article className="group relative flex flex-col">
@@ -58,6 +61,7 @@ export function StoryCard({
         seed={article.imageSeed}
         alt={article.title}
         sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 100vw"
+        preload={preload}
         isVideo={article.isVideo}
       />
       <div className="mt-3 flex flex-1 flex-col">
@@ -108,13 +112,14 @@ export function CompactCard({
 }
 
 /** Wide horizontal card used on listing pages. */
-export function ListCard({ article }: { article: Article }) {
+export function ListCard({ article, preload = false }: { article: Article; preload?: boolean }) {
   return (
     <article className="group relative grid gap-4 border-b border-line py-5 sm:grid-cols-[260px_1fr]">
       <NewsImage
         seed={article.imageSeed}
         alt={article.title}
         sizes="(min-width: 640px) 260px, 100vw"
+        preload={preload}
         isVideo={article.isVideo}
       />
       <div>

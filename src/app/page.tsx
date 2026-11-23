@@ -29,9 +29,11 @@ import Link from "next/link";
 const catHref = (slug: CategorySlug) => `/category/${slug}`;
 
 /** 1 image story + text headlines — the classic newspaper category column. */
-function CategoryColumn({ slug }: { slug: CategorySlug }) {
+function CategoryColumn({ slug, excludeId }: { slug: CategorySlug; excludeId: number }) {
   const cat = getCategory(slug)!;
-  const [first, ...rest] = getArticlesByCategory(slug, 4);
+  const [first, ...rest] = getArticlesByCategory(slug)
+    .filter((a) => a.id !== excludeId)
+    .slice(0, 4);
   return (
     <section>
       <SectionHeading title={cat.name} href={catHref(slug)} color={cat.color} />
@@ -233,12 +235,14 @@ function SportsSection({ items }: { items: Article[] }) {
 }
 
 /** Four category mini-columns side by side. */
-function MiniColumns({ slugs }: { slugs: CategorySlug[] }) {
+function MiniColumns({ slugs, excludeId }: { slugs: CategorySlug[]; excludeId: number }) {
   return (
     <div className="grid gap-10 py-10 sm:grid-cols-2 lg:grid-cols-4">
       {slugs.map((slug) => {
         const cat = getCategory(slug)!;
-        const [first, ...rest] = getArticlesByCategory(slug, 3);
+        const [first, ...rest] = getArticlesByCategory(slug)
+          .filter((a) => a.id !== excludeId)
+          .slice(0, 3);
         return (
           <section key={slug}>
             <SectionHeading
@@ -317,10 +321,10 @@ export default function Home() {
 
         {/* ===== Bangladesh / Politics / World ===== */}
         <div className="grid gap-10 border-t border-line py-10 md:grid-cols-2 lg:grid-cols-3">
-          <CategoryColumn slug="bangladesh" />
-          <CategoryColumn slug="politics" />
+          <CategoryColumn slug="bangladesh" excludeId={lead.id} />
+          <CategoryColumn slug="politics" excludeId={lead.id} />
           <div className="md:col-span-2 lg:col-span-1">
-            <CategoryColumn slug="world" />
+            <CategoryColumn slug="world" excludeId={lead.id} />
           </div>
         </div>
       </div>
@@ -328,14 +332,17 @@ export default function Home() {
       <OpinionBand items={getArticlesByCategory("opinion", 4)} />
 
       <div className="mx-auto max-w-7xl px-4">
-        <SportsSection items={getArticlesByCategory("sports")} />
+        <SportsSection
+          items={getArticlesByCategory("sports").filter((a) => a.id !== lead.id)}
+        />
       </div>
 
-      <VideoBand items={getVideos()} />
+      <VideoBand items={getVideos().filter((a) => a.id !== lead.id)} />
 
       <div className="mx-auto max-w-7xl px-4">
         <MiniColumns
           slugs={["business", "entertainment", "technology", "lifestyle"]}
+          excludeId={lead.id}
         />
 
         {/* Education strip */}
@@ -346,7 +353,9 @@ export default function Home() {
             color={getCategory("education")!.color}
           />
           <div className="grid gap-6 sm:grid-cols-3">
-            {getArticlesByCategory("education").map((a) => (
+            {getArticlesByCategory("education")
+              .filter((a) => a.id !== lead.id)
+              .map((a) => (
               <StoryCard
                 key={a.id}
                 article={a}

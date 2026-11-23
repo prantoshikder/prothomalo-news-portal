@@ -71,6 +71,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="bn"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${body.variable} ${head.variable} antialiased`}
     >

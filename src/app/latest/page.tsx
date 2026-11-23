@@ -20,8 +20,8 @@ export default function LatestPage() {
         </h1>
         <p className="mt-2 text-muted">সব বিভাগের খবর, সময় অনুযায়ী সাজানো।</p>
         <div className="mt-4">
-          {articles.map((a) => (
-            <ListCard key={a.id} article={a} />
+          {articles.map((a, i) => (
+            <ListCard key={a.id} article={a} preload={i === 0} />
           ))}
         </div>
       </div>
