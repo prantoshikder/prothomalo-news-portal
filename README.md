@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# নবকণ্ঠ (Nobokontho) — Bangla News Portal
 
-## Getting Started
+A Bangla newspaper-style news portal built with **Next.js 16 (App Router, Cache Components)**, **React 19**, **Tailwind CSS v4** and **TypeScript**.
 
-First, run the development server:
+The layout takes inspiration from classic Bangla dailies (masthead + date, category nav,
+lead story with a “সর্বশেষ / সর্বাধিক পঠিত” sidebar, category columns), but the brand, palette,
+typography and most components are original.
+
+> All articles, names and quotes in `src/lib/data.ts` are **fictional demo content**.
+> Images are random placeholders from picsum.photos.
+
+## Features
+
+- Home: lead story, secondary stories, latest/popular tabs, category columns, opinion band, sports, video band, mini category columns, education strip
+- Breaking-news ticker (pauses on hover, respects reduced motion)
+- Category pages (`/category/[slug]`), article pages (`/news/[slug]`), latest (`/latest`), search (`/search?q=`)
+- Article page: reading-progress bar, font-size control, Web Share / copy link, print, tags, related stories, JSON-LD `NewsArticle`
+- Dark mode (saved in localStorage, no flash on load), mobile drawer menu, back-to-top
+- Bangla digits & dates, Hind Siliguri + Noto Serif Bengali fonts via `next/font`
+- SEO: per-page metadata, Open Graph, `sitemap.xml`, `robots.txt`
+- All article/category pages statically prerendered
+
+## Run
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Structure
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+src/app/            routes (page, category/[slug], news/[slug], latest, search, sitemap, robots)
+src/components/     Header, Footer, cards, sidebar, client widgets
+src/lib/data.ts     demo dataset + query helpers (swap for a CMS/API later)
+src/lib/utils.ts    Bangla digit/date helpers
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To connect a real backend, replace the helpers in `src/lib/data.ts` (`getArticle`, `getArticlesByCategory`, …)
+with API calls. If you fetch at request time, wrap the data in `"use cache"` or `<Suspense>` (Cache Components is enabled).
