@@ -6,7 +6,7 @@ type Props = {
   seed: string;
   alt: string;
   sizes: string;
-  priority?: boolean;
+  preload?: boolean;
   isVideo?: boolean;
   className?: string;
   ratio?: "video" | "wide" | "square" | "portrait";
@@ -23,7 +23,7 @@ export default function NewsImage({
   seed,
   alt,
   sizes,
-  priority,
+  preload,
   isVideo,
   className,
   ratio = "video",
@@ -35,7 +35,8 @@ export default function NewsImage({
         alt={alt}
         fill
         sizes={sizes}
-        priority={priority}
+        preload={preload}
+        fetchPriority={preload ? "high" : undefined}
         className="object-cover transition duration-500 group-hover:scale-[1.04]"
       />
       {isVideo && (

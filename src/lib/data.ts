@@ -50,6 +50,16 @@ export type Article = {
   body: string[];
 };
 
+/** Minimal fields needed by headline lists — keeps client-component payloads small. */
+export type ArticleSummary = Pick<Article, "id" | "slug" | "title" | "publishedAt">;
+
+export const toSummary = ({ id, slug, title, publishedAt }: Article): ArticleSummary => ({
+  id,
+  slug,
+  title,
+  publishedAt,
+});
+
 export const categories: Category[] = [
   { slug: "bangladesh", name: "বাংলাদেশ", english: "Bangladesh", color: "#0e7c66", description: "দেশজুড়ে জেলা-উপজেলার খবর, জনজীবন ও প্রশাসন।" },
   { slug: "politics", name: "রাজনীতি", english: "Politics", color: "#c2410c", description: "দল, সংসদ, নির্বাচন ও রাজনৈতিক বিশ্লেষণ।" },
@@ -294,5 +304,8 @@ export const site = {
   name: "নবকণ্ঠ",
   english: "Nobokontho",
   tagline: "সত্যের পক্ষে, মানুষের কণ্ঠে",
-  url: "https://nobokontho.example",
+  /** Set NEXT_PUBLIC_SITE_URL in production so canonical/OG/sitemap URLs are absolute and correct. */
+  url: (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, ""),
+  locale: "bn_BD",
+  twitter: "@nobokontho",
 };

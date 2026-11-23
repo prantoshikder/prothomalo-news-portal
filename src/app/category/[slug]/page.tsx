@@ -7,6 +7,8 @@ import { ListCard, StoryCard } from "@/components/ArticleCards";
 import Sidebar from "@/components/Sidebar";
 import { categories, getArticlesByCategory, getCategory } from "@/lib/data";
 import { toBn } from "@/lib/utils";
+import JsonLd from "@/components/JsonLd";
+import { breadcrumbJsonLd, collectionJsonLd, pageMetadata } from "@/lib/seo";
 
 export function generateStaticParams() {
   return categories.map((c) => ({ slug: c.slug }));
@@ -15,8 +17,12 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/category/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const cat = getCategory(slug);
-  if (!cat) return { title: "বিভাগ পাওয়া যায়নি" };
-  return { title: `${cat.name} — সর্বশেষ খবর`, description: cat.description };
+  if (!cat) return { title: "বিভাগ পাওয়া যায়নি", robots: { index: false } };
+  return pageMetadata({
+    title: `${cat.name} — সর্বশেষ খবর`,
+    description: `${cat.name}: ${cat.description} নবকণ্ঠে পড়ুন ${cat.name} বিভাগের সর্বশেষ সংবাদ ও বিশ্লেষণ।`,
+    path: `/category/${cat.slug}`,
+  });
 }
 
 async function CategoryPageContent({ params }: Pick<PageProps<"/category/[slug]">, "params">) {
@@ -29,6 +35,15 @@ async function CategoryPageContent({ params }: Pick<PageProps<"/category/[slug]"
 
   return (
     <>
+      <JsonLd
+        data={[
+          collectionJsonLd(cat, list),
+          breadcrumbJsonLd([
+            { name: "প্রচ্ছদ", path: "/" },
+            { name: cat.name, path: `/category/${cat.slug}` },
+          ]),
+        ]}
+      />
       <div className="relative overflow-hidden border-b border-line bg-surface">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.07]"

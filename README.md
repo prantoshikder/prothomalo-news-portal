@@ -55,7 +55,7 @@ original.
 - 🔎 Search across titles, summaries, tags and locations
 - 🔢 Bangla digits, dates and relative times ("৫ মিনিট আগে")
 - 🔤 Hind Siliguri (body) and Noto Serif Bengali (headlines) via `next/font`
-- 🧭 SEO: per-page metadata, Open Graph, `sitemap.xml`, `robots.txt`, web manifest, favicon and Apple touch icon
+- 🧭 SEO: canonical URLs, Open Graph and Twitter cards, JSON-LD, `sitemap.xml`, `robots.txt`, RSS feed, web manifest and icons (see [SEO](#-seo))
 - ⚡ Every category and article page is statically prerendered (Cache Components + Partial Prefetching)
 - ♿ Skip link, ARIA tabs, labelled controls, `lang="bn"` markup
 
@@ -68,6 +68,7 @@ original.
 | `/category/[slug]` | Category page (`bangladesh`, `politics`, `world`, `business`, `opinion`, `sports`, `entertainment`, `technology`, `lifestyle`, `education`) |
 | `/news/[slug]` | Article page |
 | `/search?q=` | Search |
+| `/feed.xml` | RSS 2.0 feed of the latest 30 stories |
 | `/sitemap.xml`, `/robots.txt`, `/manifest.webmanifest` | SEO / PWA metadata |
 
 ## 🛠️ Getting started
@@ -86,6 +87,40 @@ npm run dev          # http://localhost:3000
 | `npm start` | Serve the production build |
 | `npm run lint` | Run ESLint |
 
+### Environment
+
+Copy `.env.example` to `.env.local` and set your production URL:
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
+```
+
+Canonical links, Open Graph URLs, the sitemap, robots.txt and the RSS feed are all built from this value.
+If it is not set, it falls back to `http://localhost:3000`.
+
+## 🔍 SEO
+
+| What | Where |
+| --- | --- |
+| Title template, description, keywords, robots (`max-image-preview: large`) | `src/app/layout.tsx` |
+| Canonical URL, Open Graph and Twitter card on every page | `pageMetadata()` in `src/lib/seo.ts` |
+| Article meta: `og:type=article`, published time, section, tags, author | `src/app/news/[slug]/page.tsx` |
+| JSON-LD: `NewsMediaOrganization`, `WebSite` with `SearchAction` | Home page |
+| JSON-LD: `NewsArticle` / `OpinionNewsArticle` + `BreadcrumbList` | Article page |
+| JSON-LD: `CollectionPage` with an `ItemList` + `BreadcrumbList` | Category page |
+| Default share image (1200×630) | `src/app/opengraph-image.png`, `twitter-image.png` |
+| `noindex, follow` on search results and 404 pages | `search/page.tsx`, `not-found.tsx` |
+| Sitemap with `lastModified`, change frequency and image entries | `src/app/sitemap.ts` |
+| RSS feed, advertised on every page with `<link rel="alternate">` | `src/app/feed.xml/route.ts` |
+
+**Performance**
+- Every page except search is prerendered at build time
+- The lead image is preloaded with `fetchpriority="high"`; all other images are lazy-loaded
+- Images are served as AVIF/WebP at responsive sizes and cached for 7 days
+- Font weights are limited to the ones the design actually uses
+- Client components only get the fields they need (e.g. the latest/most-read tabs get 4 fields, not full articles)
+- Security headers are added and the `X-Powered-By` header is removed (`next.config.ts`)
+
 ## 📁 Project structure
 
 ```
@@ -99,15 +134,18 @@ src/
 │   ├── search/page.tsx
 │   ├── not-found.tsx
 │   ├── icon.svg · favicon.ico · apple-icon.png
+│   ├── opengraph-image.png · twitter-image.png
+│   ├── feed.xml/route.ts        # RSS feed
 │   └── sitemap.ts · robots.ts · manifest.ts
 ├── components/
 │   ├── Header · Footer · Logo · MobileMenu · ThemeToggle · HeaderDate
 │   ├── ArticleCards             # LeadCard, StoryCard, CompactCard, ListCard, HeadlineItem
 │   ├── BreakingTicker · LatestTabs · Sidebar · SectionHeading · CategoryChip
-│   ├── NewsImage · PageSkeleton · NewsletterForm
+│   ├── NewsImage · PageSkeleton · NewsletterForm · JsonLd
 │   └── ReadingProgress · ArticleTools · BackToTop
 └── lib/
     ├── data.ts                  # Demo dataset + query helpers
+    ├── seo.ts                   # Metadata builder + JSON-LD helpers
     └── utils.ts                 # Bangla digit/date helpers, cn()
 ```
 

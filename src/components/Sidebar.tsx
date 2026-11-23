@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { getAllTags, getLatest, getMostRead } from "@/lib/data";
+import { getAllTags, getLatest, getMostRead, toSummary } from "@/lib/data";
 import LatestTabs from "./LatestTabs";
 
 export default function Sidebar({ sticky = true }: { sticky?: boolean }) {
   return (
     <aside className={sticky ? "space-y-6 lg:sticky lg:top-16" : "space-y-6"}>
-      <LatestTabs latest={getLatest(10)} popular={getMostRead(10)} />
+      <LatestTabs latest={getLatest(10).map(toSummary)} popular={getMostRead(10).map(toSummary)} />
 
       <div className="rounded-2xl border border-line bg-surface p-5">
         <h2 className="font-serif text-lg font-bold">আলোচিত বিষয়</h2>

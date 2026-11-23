@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import { ListCard } from "@/components/ArticleCards";
 import Sidebar from "@/components/Sidebar";
 import { articles } from "@/lib/data";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "সর্বশেষ খবর" };
+export const metadata: Metadata = pageMetadata({
+  title: "সর্বশেষ খবর",
+  description: "নবকণ্ঠের সব বিভাগের সর্বশেষ খবর, সময় অনুযায়ী সাজানো — বাংলাদেশ, রাজনীতি, বিশ্ব, বাণিজ্য, খেলা ও বিনোদন।",
+  path: "/latest",
+});
 
 export default function LatestPage() {
   return (

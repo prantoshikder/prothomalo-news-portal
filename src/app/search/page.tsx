@@ -4,8 +4,10 @@ import { Suspense } from "react";
 import { ListCard } from "@/components/ArticleCards";
 import { getAllTags, searchArticles } from "@/lib/data";
 import { toBn } from "@/lib/utils";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "খুঁজুন" };
+// Search result pages are thin/duplicate content — keep them out of the index but let crawlers follow links.
+export const metadata: Metadata = pageMetadata({ title: "খুঁজুন", path: "/search", noindex: true });
 
 async function Results({ searchParams }: { searchParams: PageProps<"/search">["searchParams"] }) {
   const sp = await searchParams;

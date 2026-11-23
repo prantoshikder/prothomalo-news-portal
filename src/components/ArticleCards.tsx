@@ -1,10 +1,10 @@
 import Link from "next/link";
-import type { Article } from "@/lib/data";
+import type { Article, ArticleSummary } from "@/lib/data";
 import { cn, timeAgo, toBn } from "@/lib/utils";
 import CategoryChip from "./CategoryChip";
 import NewsImage from "./NewsImage";
 
-const href = (a: Article) => `/news/${a.slug}`;
+const href = (a: ArticleSummary) => `/news/${a.slug}`;
 
 function Meta({ article, className }: { article: Article; className?: string }) {
   return (
@@ -24,7 +24,7 @@ export function LeadCard({ article }: { article: Article }) {
         seed={article.imageSeed}
         alt={article.title}
         sizes="(min-width: 1024px) 640px, 100vw"
-        priority
+        preload
         isVideo={article.isVideo}
         ratio="video"
       />
@@ -136,7 +136,7 @@ export function ListCard({ article }: { article: Article }) {
 }
 
 /** Text-only headline, optional number. */
-export function HeadlineItem({ article, index }: { article: Article; index?: number }) {
+export function HeadlineItem({ article, index }: { article: ArticleSummary; index?: number }) {
   return (
     <article className="group relative flex gap-3 py-3">
       {index !== undefined && (

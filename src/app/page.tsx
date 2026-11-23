@@ -16,10 +16,13 @@ import {
   getLatest,
   getMostRead,
   getVideos,
+  toSummary,
   type Article,
   type CategorySlug,
 } from "@/lib/data";
 import { timeAgo } from "@/lib/utils";
+import JsonLd from "@/components/JsonLd";
+import { websiteJsonLd } from "@/lib/seo";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -264,6 +267,7 @@ export default function Home() {
 
   return (
     <>
+      <JsonLd data={websiteJsonLd()} />
       <h1 className="sr-only">নবকণ্ঠ — আজকের প্রধান খবর</h1>
       <div className="mx-auto max-w-7xl px-4">
         {/* ===== Top stories ===== */}
@@ -297,7 +301,7 @@ export default function Home() {
           </div>
 
           <div className="lg:col-span-3">
-            <LatestTabs latest={getLatest(10)} popular={getMostRead(10)} />
+            <LatestTabs latest={getLatest(10).map(toSummary)} popular={getMostRead(10).map(toSummary)} />
           </div>
         </section>
 

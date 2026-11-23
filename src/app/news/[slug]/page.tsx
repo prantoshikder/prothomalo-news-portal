@@ -17,8 +17,9 @@ import {
   getCategory,
   getRelated,
   imageUrl,
-  site,
 } from "@/lib/data";
+import JsonLd from "@/components/JsonLd";
+import { articleJsonLd, breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 import { formatBnDate, toBn } from "@/lib/utils";
 
 export function generateStaticParams() {
@@ -28,16 +29,27 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/news/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const article = getArticle(slug);
-  if (!article) return { title: "খবর পাওয়া যায়নি" };
-  return {
+  if (!article) return { title: "খবর পাওয়া যায়নি", robots: { index: false } };
+  const cat = getCategory(article.category);
+  const base = pageMetadata({
     title: article.title,
     description: article.excerpt,
+    path: `/news/${article.slug}`,
+    images: [imageUrl(article.imageSeed, 1200, 630)],
+  });
+  return {
+    ...base,
+    keywords: article.tags,
+    authors: [{ name: article.author.name }],
+    category: cat?.name,
     openGraph: {
-      title: article.title,
-      description: article.excerpt,
+      ...base.openGraph,
       type: "article",
       publishedTime: article.publishedAt,
-      images: [imageUrl(article.imageSeed)],
+      modifiedTime: article.publishedAt,
+      section: cat?.name,
+      tags: article.tags,
+      authors: [article.author.name],
     },
   };
 }
@@ -50,25 +62,18 @@ async function ArticlePageContent({ params }: Pick<PageProps<"/news/[slug]">, "p
   const cat = getCategory(article.category)!;
   const related = getRelated(article, 3);
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "NewsArticle",
-    headline: article.title,
-    description: article.excerpt,
-    image: [imageUrl(article.imageSeed)],
-    datePublished: article.publishedAt,
-    author: [{ "@type": "Person", name: article.author.name }],
-    publisher: { "@type": "Organization", name: site.name },
-    articleSection: cat.name,
-    inLanguage: "bn",
-  };
-
   return (
     <>
       <ReadingProgress />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      <JsonLd
+        data={[
+          articleJsonLd(article),
+          breadcrumbJsonLd([
+            { name: "প্রচ্ছদ", path: "/" },
+            { name: cat.name, path: `/category/${cat.slug}` },
+            { name: article.title, path: `/news/${article.slug}` },
+          ]),
+        ]}
       />
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-8 lg:grid-cols-[1fr_340px]">
         <article>
@@ -113,7 +118,7 @@ async function ArticlePageContent({ params }: Pick<PageProps<"/news/[slug]">, "p
               seed={article.imageSeed}
               alt={article.title}
               sizes="(min-width: 1024px) 800px, 100vw"
-              priority
+              preload
               isVideo={article.isVideo}
               className="rounded-2xl"
             />

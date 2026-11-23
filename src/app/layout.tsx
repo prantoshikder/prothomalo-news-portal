@@ -3,6 +3,7 @@ import BreakingTicker from "@/components/BreakingTicker";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { site } from "@/lib/data";
+import { DEFAULT_DESCRIPTION, RSS_ALTERNATE } from "@/lib/seo";
 import type { Metadata, Viewport } from "next";
 import { Hind_Siliguri, Noto_Serif_Bengali } from "next/font/google";
 import "./globals.css";
@@ -17,7 +18,7 @@ const body = Hind_Siliguri({
 const head = Noto_Serif_Bengali({
   variable: "--font-head",
   subsets: ["bengali", "latin"],
-  weight: ["500", "600", "700"],
+  weight: ["600", "700"],
   display: "swap",
 });
 
@@ -27,9 +28,33 @@ export const metadata: Metadata = {
     default: `${site.name} | ${site.tagline}`,
     template: `%s | ${site.name}`,
   },
-  description:
-    "নবকণ্ঠ — বাংলাদেশ, রাজনীতি, বিশ্ব, বাণিজ্য, খেলা, বিনোদন ও প্রযুক্তির সর্বশেষ খবর। (ডেমো নিউজ পোর্টাল)",
-  openGraph: { siteName: site.name, locale: "bn_BD", type: "website" },
+  description: DEFAULT_DESCRIPTION,
+  applicationName: site.name,
+  keywords: ["বাংলা খবর", "সর্বশেষ খবর", "বাংলাদেশ", "রাজনীতি", "খেলা", "বিনোদন", "Bangla news", site.english],
+  alternates: {
+    canonical: "/",
+    types: RSS_ALTERNATE,
+  },
+  openGraph: {
+    siteName: site.name,
+    locale: site.locale,
+    type: "website",
+    url: "/",
+    title: `${site.name} | ${site.tagline}`,
+    description: DEFAULT_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: site.twitter,
+    title: `${site.name} | ${site.tagline}`,
+    description: DEFAULT_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
+  formatDetection: { telephone: false, address: false, email: false },
 };
 
 export const viewport: Viewport = {

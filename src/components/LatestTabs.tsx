@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import type { Article } from "@/lib/data";
+import type { ArticleSummary } from "@/lib/data";
 import { HeadlineItem } from "./ArticleCards";
 
 export default function LatestTabs({
   latest,
   popular,
 }: {
-  latest: Article[];
-  popular: Article[];
+  latest: ArticleSummary[];
+  popular: ArticleSummary[];
 }) {
   const [tab, setTab] = useState<"latest" | "popular">("latest");
   const list = tab === "latest" ? latest : popular;
